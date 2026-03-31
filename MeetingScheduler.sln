@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingScheduler.UI", "MeetingScheduler\MeetingScheduler.UI.csproj", "{B6F8D174-FE41-4E4E-ACEE-B22A4823F80C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingScheduler.Infrastructure", "MeetingScheduler.Business\MeetingScheduler.Infrastructure.csproj", "{13F50299-1CD1-45FB-A3C1-065553D0B1AE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingScheduler.Domain", "MeetingScheduler.Domain\MeetingScheduler.Domain.csproj", "{8C493F12-0CCA-479D-8650-1D14340484FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingScheduler.Identity", "MeetingScheduler.Identity\MeetingScheduler.Identity.csproj", "{796AAE8D-1F88-4FF3-BDE5-2ED326AAC8A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Hangfire", "MeetingScheduler.Hangfire\MeetingScheduler.Hangfire.csproj", "{5C4DF28A-5C79-45ED-81B0-4E6ECCAA02BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B6F8D174-FE41-4E4E-ACEE-B22A4823F80C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6F8D174-FE41-4E4E-ACEE-B22A4823F80C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6F8D174-FE41-4E4E-ACEE-B22A4823F80C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F8D174-FE41-4E4E-ACEE-B22A4823F80C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13F50299-1CD1-45FB-A3C1-065553D0B1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13F50299-1CD1-45FB-A3C1-065553D0B1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13F50299-1CD1-45FB-A3C1-065553D0B1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13F50299-1CD1-45FB-A3C1-065553D0B1AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C493F12-0CCA-479D-8650-1D14340484FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C493F12-0CCA-479D-8650-1D14340484FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C493F12-0CCA-479D-8650-1D14340484FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C493F12-0CCA-479D-8650-1D14340484FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796AAE8D-1F88-4FF3-BDE5-2ED326AAC8A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796AAE8D-1F88-4FF3-BDE5-2ED326AAC8A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796AAE8D-1F88-4FF3-BDE5-2ED326AAC8A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796AAE8D-1F88-4FF3-BDE5-2ED326AAC8A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4DF28A-5C79-45ED-81B0-4E6ECCAA02BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C4DF28A-5C79-45ED-81B0-4E6ECCAA02BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4DF28A-5C79-45ED-81B0-4E6ECCAA02BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C4DF28A-5C79-45ED-81B0-4E6ECCAA02BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {55D18E67-72B4-4431-90C1-73948E867E1C}
+	EndGlobalSection
+EndGlobal
