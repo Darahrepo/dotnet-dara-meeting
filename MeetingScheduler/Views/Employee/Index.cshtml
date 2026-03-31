@@ -1,0 +1,90 @@
+﻿@model List<MeetingScheduler.UI.Models.EmployeeVm>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    ViewData["Title"] = localizer["ViewEmployees"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="info-box transparent">
+        <span class="info-box-icon bg-info"><i class="fa fa-user-friends"></i></span>
+        <div class="info-box-content">
+            <h1 class="m-0">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        @*<div class="card-header">
+                                <a asp-action="Create" class="btn btn-success float-right">@sharedLocalizer["Create"]</a>
+                            </div>*@
+                        <!-- /.card-header -->
+                        <div class="card-header">
+                            <a asp-action="AddADEmployeesToDatabase" class="btn btn-outline-primary btn-bg sync-employees float-right"><i class="fa fa-rotate"> </i> @localizer["SyncEmployees"] </a>
+                            
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> @localizer["Name"] </th>
+                                        <th> @localizer["EmailAddress"] </th>
+                                        <th> @localizer["Role"] </th>
+                                        <th> @sharedLocalizer["Actions"] </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var count = 0;
+                                    }
+                                    @foreach (var employee in Model)
+                                    {
+                                        <tr>
+                                            <td> @(++count) </td>
+                                            <td>
+                                                <p>
+                                                    @employee.FullNameEn
+
+                                                    @if (!string.IsNullOrWhiteSpace(employee.FullNameAr))
+                                                    {
+                                                        <span> - @employee.FullNameAr</span>
+                                                    }
+
+                                                </p>
+                                            </td>
+                                            <td> <p> @employee.EmailAddress </p> </td>
+                                            <td> <p> @employee.Role.Name </p> </td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-outline-success btn-sm"><i class="fas fa-pen"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </div> <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

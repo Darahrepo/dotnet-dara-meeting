@@ -1,0 +1,21 @@
+/*!
+ *   AdminLTE v3.1.0
+ *     Only Components
+ *   Author: Colorlib
+ *   Website: AdminLTE.io <https://adminlte.io>
+ *   License: Open source - MIT <https://opensource.org/licenses/MIT>
+ */
+
+// Bootstrap
+// ---------------------------------------------------
+@import "~/build/scss/functions";
+@import "~/build/scss/_bootstrap-variables";
+@import "~/build/scss/mixins";
+
+// Variables and Mixins
+// ---------------------------------------------------
+@import "~/build/scss/variables";
+@import "~/build/scss/variables-alt";
+@import "~/build/scss/mixins";
+
+@import "~/docs/components/";

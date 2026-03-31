@@ -1,0 +1,37 @@
+﻿@model MeetingVm
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    Layout = "";
+    Random rnd = new Random();
+    var index = rnd.Next();
+}
+
+
+<div class="row " id="ExternalAttendeesDiv">
+    <input type="hidden" name="ExternalAttendeesList.Index" value='@index' />
+
+    <div class="col-6">
+        <input type="text" name="ExternalAttendeesList[@index].NameAr" value="" class=" form-control" placeholder="@sharedLocalizer["Name_ph"]">
+    </div>
+
+    @* <div class="col-3">
+        <input type="text" asp-for="ExternalAttendeesList[@index].NameEn" id="ExternalAttendeesList[@index].NameEn" name="ExternalAttendeesList[@index].NameEn" value="" class=" form-control" placeholder="@sharedLocalizer["NameEn_ph"]">
+
+    </div> *@
+
+    <div class="col-5">
+        <input type="email" name="ExternalAttendeesList[@index].EmailAddress" value="" class=" externalAttendeesInput form-control email" placeholder="@sharedLocalizer["EmailAddress_ph"]">
+    </div>
+
+    <div class="row  flex">
+        <a class="btn btn-default addExternalAttendeeField">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a class="btn btn-default removeExternalAttendeeField">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+
+</div>

@@ -1,0 +1,206 @@
+﻿@model List<MeetingScheduler.UI.Models.MeetingVm>
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@using System.Globalization;
+@using System.Security.Claims;
+@{
+    Layout = "";
+}
+
+<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+<table id="example1" class="table table-bordered">
+    <thead>
+        <tr>
+            <th> # </th>
+            <th> @localizer["Subject"] </th>
+            <th> @localizer["Host"] </th>
+            <th> @localizer["DateTime"] </th>
+            <th> @localizer["Place"] </th>
+            <th> @localizer["Status"] </th>
+            <th> @localizer["Reason"] </th>
+            <th> @localizer["Actions"] </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var count = 0; }
+        @foreach (var item in Model.Select((value, index) => new { value, index }))
+        {
+            <tr>
+                <td> @(++count) </td>
+                <td> <p> @item.value.Subject </p> </td>
+                <td> <p> @item.value.Host.DisplayName</p> </td>
+                <td> <p> @item.value.Date.ToString("dd MMMM yyyy") <br /> @(item.value.Time_From) - @item.value.Time_To </p> </td>
+                <td>
+
+
+                    @if (item.value.MeetingLocationType == LocationType.Online)
+                    {
+                        <p>
+                            <b> @localizer["Online"]  </b> <br />
+                            @if (!string.IsNullOrEmpty(item.value.MeetingLink) && item.value.ApprovalStatus != ApprovalStatus.Cancelled)
+                            {
+                                <a target="_blank" href="@(item.value.MeetingLink)"> @localizer["MeetingLink"]</a>
+                            }
+                            else
+                            {
+                                <small> @localizer["NoMeetingLink"] </small>
+                            }
+                        </p>
+                    }
+                    else if (item.value.MeetingLocationType == LocationType.FaceToFace)
+                    {
+                        <p>
+                            <b>@localizer["FaceToFace"] </b> <br />
+                            @item.value.MeetingRoom.NameEn - @item.value.MeetingRoom.NameAr
+                        </p>
+                    }
+                    else if (item.value.MeetingLocationType == LocationType.Both)
+                    {
+                        <p>
+                            <b>@localizer["Both"]</b>
+                            <br />
+                            @item.value.MeetingRoom.NameEn - @item.value.MeetingRoom.NameAr
+                            <br />
+                             @if (!string.IsNullOrEmpty(item.value.MeetingLink) && item.value.ApprovalStatus != ApprovalStatus.Cancelled)
+                            {
+                                <a target="_blank" href="@(item.value.MeetingLink)"> @localizer["MeetingLink"]</a>
+                            }
+                            else
+                            {
+                                <small> @localizer["NoMeetingLink"] </small>
+                            }
+                        </p>
+                    }
+                </td>
+                <td>
+                    @if (item.value.ApprovalStatus == ApprovalStatus.Approved)
+                    {
+                        <span class="badge badge-success">@sharedLocalizer["Approved"]</span>
+                    }
+                    else if (item.value.ApprovalStatus == ApprovalStatus.Pending)
+                    {
+                        <span class="badge badge-warning"> @sharedLocalizer["Pending"]</span>
+                    }
+                    else if (item.value.ApprovalStatus == ApprovalStatus.Cancelled)
+                    {
+                        <span class="badge badge-danger">@sharedLocalizer["Cancelled"]  </span>
+                    }
+                    else if (item.value.ApprovalStatus == ApprovalStatus.Rejected)
+                    {
+                        <span class="badge badge-danger"> @sharedLocalizer["Rejected"] </span>
+                    }
+                </td>
+                <td>
+                    @if (item.value.ApprovalStatus == ApprovalStatus.Pending && (item.value.Date > DateTime.Now.Date || (item.value.Date == DateTime.Now.Date && item.value.Time_From.Ticks > DateTime.Now.TimeOfDay.Ticks)) && User.IsInRole(Roles.Admin))
+                    {
+                        <textarea rows="3" class="form-control" placeholder="@localizer["Reason"]" style="min-height: 78px; max-height:110px "></textarea>
+                        <span class="text-danger" id="error-message[@(item.index)]"></span>
+                    }
+                    else if (item.value.ApprovalStatus == ApprovalStatus.Rejected || item.value.ApprovalStatus == ApprovalStatus.Approved)
+                    {
+                        <p>@item.value.Reason</p>
+                    }
+                </td>
+                <td>
+                    @* If user is admin/ host, he can View *@
+                    <a class="btn btn-outline-dark btn-sm" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#detailsModal" data-id="@item.value.Id" onclick="Details(@item.value.Id)">
+                        <i class="fas fa-eye"></i>
+                        @localizer["View"]
+                    </a>
+
+                    @if (item.value.ApprovalStatus == ApprovalStatus.Pending && User.IsInRole(Roles.Admin))
+                    {
+                        <a class=" btn btn-outline-success btn-sm " onclick='changeApprovalStatus(this)'   data-status="@ApprovalStatus.Approved" data-id="@item.value.Id" data-index="@item.index">
+                            <i class="fas fa-check">
+                            </i>
+                            @localizer["Approve"]
+                        </a>
+                        <a class=" btn btn-outline-danger btn-sm" onclick='changeApprovalStatus(this)'  data-status="@ApprovalStatus.Rejected" data-id="@item.value.Id" data-index="@item.index">
+                            <i class="fas fa-times">
+                            </i>
+                            @localizer["Reject"]
+                        </a>
+                    }
+                     @if(((item.value.Date +item.value.Time_To) > DateTime.Now 
+                     || (item.value.Date == DateTime.Now.Date && item.value.Time_From.Add(TimeSpan.FromMinutes(15)).Ticks > DateTime.Now.TimeOfDay.Ticks))
+                     && (item.value.ApprovalStatus == ApprovalStatus.Pending || item.value.ApprovalStatus == ApprovalStatus.Approved) 
+                     && (User.IsInRole(Roles.Admin) || Convert.ToInt32(User.FindFirst(ClaimTypes.PrimarySid).Value) == item.value.HostId || (item.value.ZoomAccount == ZoomUserType.Ceo && (User.IsInRole(Roles.Ceo) || User.IsInRole(Roles.CeoAssistant)))))
+                     {
+                        <a class="btn btn-outline-danger btn-sm "  onclick='changeApprovalStatus(this)'  data-status="@ApprovalStatus.Cancelled" data-id="@item.value.Id" >
+                            <i class="fas fa-trash">
+                            </i>
+                            @localizer["Cancel"]
+                        </a>
+                     }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $(function () {
+            var isArabic = '@CultureInfo.CurrentCulture.TextInfo.IsRightToLeft';
+            if (isArabic.toLowerCase() == 'true') {
+                $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                   /* "buttons": ["excel", "pdf", "print"], //, "colvis",*/
+                    "language":
+                    {
+                        "sProcessing": "جاري التحميل...",
+                        "sLengthMenu": "أظهر مُدخلات _MENU_",
+                        "sZeroRecords": "لم يُعثر على أية سجلات",
+                        "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مُدخل",
+                        "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجلّ",
+                        "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+                        "sInfoPostFix": "",
+                        "sSearch": "ابحث:",
+                        "sUrl": "",
+                        "oPaginate": {
+                            "sFirst": "الأول",
+                            "sPrevious": "السابق",
+                            "sNext": "التالي",
+                            "sLast": "الأخير"
+                        }
+                    },
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json",
+                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            } else {
+                $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    //"buttons": ["excel", "pdf", "print"] //, "colvis",
+                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            }
+        });
+
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+</script>

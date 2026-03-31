@@ -1,0 +1,209 @@
+﻿@model List<MeetingScheduler.UI.Models.WebinarVm>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@using MeetingScheduler.Domain.Enums;
+
+@using System.Globalization;
+@using System.Security.Claims;
+@{
+    ViewData["Title"] = localizer["Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="info-box transparent">
+        <span class="info-box-icon bg-info"><i class="fa fa-video"></i></span>
+        <div class="info-box-content">
+            <h1 class="m-0">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</div>
+
+<form>
+    <div>
+        <div class="overlay-wrapper">
+            <div class="overlay"><i class="fas fa-3x fa-spinner fa-pulse"></i><div class="text-bold pt-2"></div></div>
+        </div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Main row -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card  text-sm d-block">
+                            <div class="card-header ">
+                                <button type="button" class="btn btn-outline-primary dropdown-toggle float-left " aria-expanded="false" id="filter" data-toggle="dropdown">
+                                    @localizer["ApprovedWebinarsToday"]
+                                </button>
+                                <div class="dropdown-menu ">
+                                    <a class="dropdown-item" href="#" id="GetApprovedWebinarsToday" onclick="GetApprovedWebinarsToday()">@localizer["ApprovedWebinarsToday"]</a>
+                                    <a class="dropdown-item" href="#" id="GetPendingApprovals" onclick="GetPendingApprovals()">@localizer["PendingApprovals"]</a>
+                                    <a class="dropdown-item" href="#" id="GetScheduledWebinars" onclick="GetScheduledWebinars()">@localizer["ScheduledWebinars"]</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" id="GetArchived" onclick="GetArchived()">@localizer["Archived"]</a>
+                                </div>
+                                <a asp-action="Create" class="btn btn-default btn-success float-right">@sharedLocalizer["CreateWebinar"]</a>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div id="Webinar-data">
+                                    <table id="example1" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th> # </th>
+                                                <th> @localizer["Subject"] </th>
+                                                <th> @localizer["Host"] </th>
+                                                <th> @localizer["DateTime"] </th>
+                                                <th> @localizer["Status"] </th>
+                                                <th> @localizer["Reason"] </th>
+                                                <th> @localizer["Actions"] </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ var count = 0; }
+                                            @foreach (var item in Model.Select((value, index) => new { value, index }))
+                                            {
+                                                <tr>
+                                                    <td> @(++count) </td>
+                                                    <td> <p> @item.value.Subject </p> </td>
+                                                    <td> <p> @item.value.Host.DisplayName</p> </td>
+                                                    <td> <p> @item.value.Date.ToString("dd MMMM yyyy") <br /> @item.value.Time_From.ToString("hh\\:mm") - @item.value.Time_To.ToString("hh\\:mm") </p> </td>
+                                                    <td>
+                                                        @if (item.value.ApprovalStatus == ApprovalStatus.Approved)
+                                                        {
+                                                            <span class="badge badge-success">@sharedLocalizer["Approved"]</span>
+                                                        }
+                                                        else if (item.value.ApprovalStatus == ApprovalStatus.Pending)
+                                                        {
+                                                            <span class="badge badge-warning"> @sharedLocalizer["Pending"]</span>
+                                                        }
+                                                        else if (item.value.ApprovalStatus == ApprovalStatus.Cancelled)
+                                                        {
+                                                            <span class="badge badge-danger">@sharedLocalizer["Cancelled"]  </span>
+                                                        }
+                                                        else if (item.value.ApprovalStatus == ApprovalStatus.Rejected)
+                                                        {
+                                                            <span class="badge badge-danger"> @sharedLocalizer["Rejected"] </span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <p>@item.value.Reason</p>
+                                                    </td>
+                                                    <td>
+                                                        @* If user is admin/ host, he can View *@
+                                                        <a class="btn btn-outline-dark btn-sm" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#detailsModal" data-id="@item.value.Id" onclick="Details(@item.value.Id)">
+                                                            <i class="fas fa-eye"></i>
+                                                            @localizer["View"]
+                                                        </a>
+
+                                                        @if ((item.value.Date > DateTime.Now.Date || (item.value.Date == DateTime.Now.Date && item.value.Time_From.Add(TimeSpan.FromMinutes(15)).Ticks > DateTime.Now.TimeOfDay.Ticks)) 
+                                                        && (item.value.ApprovalStatus == ApprovalStatus.Pending || item.value.ApprovalStatus == ApprovalStatus.Approved) 
+                                                        && (User.IsInRole(Roles.Admin))) @*|| Convert.ToInt32(User.FindFirst(ClaimTypes.PrimarySid).Value) == item.value.HostId) // only admin can remove*@
+                                                        {
+                                                            <a class=" btn btn-outline-danger btn-sm" onclick='changeApprovalStatus(this)' data-status="@ApprovalStatus.Cancelled" data-id="@item.value.Id" data-index="@item.index">
+                                                                <i class="fas fa-trash">
+                                                                </i>
+                                                                @localizer["Cancel"]
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </section>
+        <!-- /.content -->
+    </div>
+</form>
+
+<div class="modal fade" id="detailsModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="overlay-wrapper">
+                <div class="overlay"><i class="fas fa-3x fa-spinner fa-pulse"></i><div class="text-bold pt-2"></div></div>
+            </div>
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    @localizer["Details"]
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="@sharedLocalizer["Close"]">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div></div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-danger btn-default" data-dismiss="modal"> @sharedLocalizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    function GetPendingApprovals() {
+        $(".overlay").show();
+        $.get("@Url.Action("GetPendingWebinars_EmployeeFilter", "Webinar")",
+            function (data) {
+                $('#Webinar-data').html(data);
+                $("#filter").html('@localizer["PendingApprovals"]');
+                $(".overlay").hide();
+            }
+        );
+    }
+
+    function GetApprovedWebinarsToday() {
+        $(".overlay").show();
+        $.get("@Url.Action("GetTodaysWebinars_EmployeeFilter", "Webinar")",
+            function (data) {
+                $('#Webinar-data').html(data);
+                $("#filter").html("@localizer["ApprovedWebinarsToday"]");
+                $(".overlay").hide();
+
+
+            }
+        );
+    }
+
+    function GetScheduledWebinars() {
+         $(".overlay").show();
+        $.get("@Url.Action("GetScheduledWebinars_EmployeeFilter", "Webinar")",
+            function (data) {
+                $('#Webinar-data').html(data);
+                $("#filter").html("@localizer["ScheduledWebinars"]");
+                $(".overlay").hide();
+
+
+            }
+        );
+    }
+    function GetArchived() {
+        $(".overlay").show();
+        $.get("@Url.Action("GetArchivedWebinars_EmployeeFilter", "Webinar")",
+            function (data) {
+                $('#Webinar-data').html(data);
+                $("#filter").html("@localizer["Archived"]");
+                $(".overlay").hide();
+
+            }
+        );
+    }
+</script>
+

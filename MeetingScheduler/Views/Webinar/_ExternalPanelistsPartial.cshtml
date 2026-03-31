@@ -1,0 +1,37 @@
+﻿@model WebinarVm
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    Layout = "";
+    Random rnd = new Random();
+    int index = rnd.Next();
+}
+
+
+<div class="row " id="ExternalWebinarPanelistsDiv" style="margin-top:3px;">
+    <input type="hidden" name="ExternalWebinarPanelists.Index" value='@index' />
+
+    <div class="col-3">
+        <input type="text" asp-for="ExternalWebinarPanelists[@index].ExternalPanelistNameAr"  id="ExternalWebinarPanelists[@index].ExternalPanelistNameAr"  name="ExternalWebinarPanelists[@index].ExternalPanelistNameAr" value="" class=" form-control" placeholder="@sharedLocalizer["NameAr_ph"]">
+    </div>
+
+    <div class="col-3">
+        <input type="text" asp-for="ExternalWebinarPanelists[@index].ExternalPanelistNameEn" id="ExternalWebinarPanelists[@index].ExternalPanelistNameEn" name="ExternalWebinarPanelists[@index].ExternalPanelistNameEn" value="" class=" form-control" placeholder="@sharedLocalizer["NameEn_ph"]">
+
+    </div>
+
+    <div class="col-4">
+        <input type="email" asp-for="ExternalWebinarPanelists[@index].ExternalPanelistEmailAddress" id="ExternalWebinarPanelists[@index].ExternalPanelistEmailAddress" name="ExternalWebinarPanelists[@index].ExternalPanelistEmailAddress" value="" class=" externalPanelistsInput form-control" placeholder="@sharedLocalizer["EmailAddress_ph"]">
+    </div>
+
+    <div class="col-2">
+        <a class="btn btn-default addExternalPanelistField">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a class="btn btn-default removeExternalPanelistField">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+
+</div>

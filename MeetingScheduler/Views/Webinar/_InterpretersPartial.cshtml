@@ -1,0 +1,43 @@
+﻿@model WebinarVm
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    Layout = "";
+    Random rnd = new Random();
+    var index = rnd.Next();
+}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+
+
+<div class="row " id="InterpretersDiv" style="margin-top:3px;">
+    <input type="hidden" name="Interpreters.Index" value='@index' />
+
+    <div class="col-3">
+        <select asp-for="Interpreters[@index].FromLanguageId" onload="changeLanguage(@index)" onchange="changeLanguage(@index)"  name="Interpreters[@index].FromLanguageId" required="required" asp-items="@(new SelectList(Model.LanguagesList, "Id", "Name",2))" data-index="@index" placeholder="@localizer["From"]" id="From_language_@index" class="required form-control select2bs4 languageChange" style="width: 100%;">
+        </select>
+        <div><code id="@index"> </code></div>
+    </div>
+    <p> <i class="fa fa-exchange-alt"></i> </p>
+
+    <div class="col-3">
+        <select asp-for="Interpreters[@index].ToLanguageId" onload="changeLanguage(@index)" onchange="changeLanguage(@index)" name="Interpreters[@index].ToLanguageId" required="required" asp-items="@(new SelectList(Model.LanguagesList, "Id", "Name",1))" data-index="@index" placeholder="@localizer["To"]" id="To_language_@index" class="required form-control select2bs4 languageChange" style="width: 100%;">
+        </select>
+    </div>
+
+    <div class="col-4">
+        <input type="email" asp-for="Interpreters[@index].EmailAddress" id="Interpreters[@index].EmailAddress" required="required" name="Interpreters[@index].EmailAddress" value="" class="required form-control" placeholder="@sharedLocalizer["EmailAddress_ph"]">
+    </div>
+
+    <div class="col-1">
+        <a class="btn-default addInterpretersField">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a class="btn btn-default removeInterpretersField">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+
+</div>

@@ -1,0 +1,399 @@
+﻿@model MeetingScheduler.UI.Models.WebinarVm
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@using System.Globalization;
+@using System.Security.Claims;
+
+@{
+    Layout = "";
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+}
+
+<!-- Toastr -->
+<link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
+
+
+<div class="container-fluid">
+    <div class="overlay-wrapper">
+        <div class="overlay"><i class="fas fa-3x fa-spinner fa-pulse"></i><div class="text-bold pt-2"></div></div>
+    </div>
+    <div class="float-right">
+        @if (Model.ZoomAccount == ZoomUserType.Ceo)
+        {
+            <span class="badge badge-warning">  @sharedLocalizer["CeoMeeting"] </span>
+        }
+
+        @if (Model.ApprovalStatus == ApprovalStatus.Approved)
+        {
+            <span class="badge badge-success"> @sharedLocalizer["Approved"]  </span>
+        }
+        else if (Model.ApprovalStatus == ApprovalStatus.Pending)
+        {
+            <span class="badge badge-warning"> @sharedLocalizer["Pending"] </span>
+        }
+        else if (Model.ApprovalStatus == ApprovalStatus.Cancelled)
+        {
+            <span class="badge badge-danger"> @sharedLocalizer["Cancelled"] </span>
+        }
+        else if (Model.ApprovalStatus == ApprovalStatus.Rejected)
+        {
+            <span class="badge badge-danger"> @sharedLocalizer["Rejected"] </span>
+        }
+    </div>
+    <div class="row">
+        <div class="float-right">
+
+
+            @if (Model.IsRecorded)
+            {
+                <span class="badge badge-success"><i class="fas fa-video"></i> @localizer["RecordingRequested"]  </span>
+            }
+            else
+            {
+                <span class="badge badge-danger"><i class="fas fa-video"></i>  @localizer["RecordingNotRequested"] </span>
+            }
+
+
+            @if (Model.IsAttachmentShared)
+            {
+                <span class="badge badge-success"><i class="fa fa-paperclip" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["SharedAttachments"]  </span>
+            }
+            else if (Model.IsAttachmentShared && Model.WebinarAttachments.Count > 0 && Model.WebinarAttachments != null)
+            {
+                <span class="badge badge-danger"><i class="fa fa-paperclip" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["PrivateAttachments"] </span>
+            }
+
+            @if (Model.IsTranslationNeeded)
+            {
+                <span class="badge badge-success"><i class="fas fa-language"></i> @localizer["TranslationNeeded"]  </span>
+            }
+            else
+            {
+                <span class="badge badge-danger"><i class="fas fa-language"></i>  @localizer["TranslationNotNeeded"] </span>
+            }
+
+            @if (Model.IsCertificateProvided)
+            {
+                <span class="badge badge-success"><i class="fa fa-scroll" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["CertificateProvided"]  </span>
+            }
+            else
+            {
+                <span class="badge badge-danger"><i class="fa fa-scroll" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["CertificateNotProvided"] </span>
+            }
+
+            @if (Model.IsRegistrationNeeded)
+            {
+                <span class="badge badge-success"><i class="fa fa-pen-fancy" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["RegistrationNeeded"]  </span>
+            }
+            else
+            {
+                <span class="badge badge-danger"><i class="fa fa-pen-fancy" aria-hidden="true"></i>&nbsp;&nbsp; @localizer["RegistrationNotNeeded"] </span>
+            }
+        </div>
+
+        <div class="col-12 col-md-12 col-lg-8 order-1 order-md-1">
+
+            <div class="text-muted">
+                <b>@localizer["WebinarSubject"]</b>
+                <div class="row">
+                    <p class="text-sm d-block col-6">@Model.Subject</p>
+                </div>
+            </div>
+            <div class="text-muted">
+                <b>@localizer["DateTime"]</b>
+                <p class="text-sm d-block">
+                    @Model.Date.ToString("dd MMMM yyyy")
+                    <br />
+                    @Model.Time_From.ToString("hh\\:mm") - @Model.Time_To.ToString("hh\\:mm")
+                </p>
+            </div>
+
+            <div class="text-muted">
+                <b>@localizer["WebinarHost"]</b>
+                <div class="row">
+                    <p class="col-6 text-sm d-block">@Model.Host.DisplayName</p>
+                    <p class="col-6 text-sm d-block">@Model.Host.EmailAddress </p>
+
+                </div>
+            </div>
+
+            <div class="text-muted">
+                <b>@localizer["InternalPanelists"]</b>
+                <div>
+                    @{ if (Model.InternalWebinarPanelists.Count > 0)
+                        {
+                            int count = 1;
+                            @foreach (var attendee in Model.InternalWebinarPanelists)
+                            {
+                                <div class="row">
+                                    <p class="col-1 text-sm d-block"><b>@(count++)</b></p>
+                                    <p class="col-5 text-sm d-block">@attendee.DisplayName</p>
+                                    <p class="col-5 text-sm d-block">@attendee.EmailAddress </p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <code>@sharedLocalizer["None"]</code>
+                        }
+                    }
+                </div>
+            </div>
+
+
+            <div class="text-muted">
+                <b> @localizer["ExternalPanelists"] </b>
+                <div>
+                    @{
+                        if (Model.ExternalWebinarPanelists.Count > 0)
+                        {
+                            int count = 1;
+                            @foreach (var attendee in Model.ExternalWebinarPanelists)
+                            {
+                                <div class="row">
+                                    <p class="col-1 text-sm d-block"><b>@(count++))</b></p>
+                                    <p class="col-5 text-sm d-block">@attendee.ExternalPanelistNameAr <br /> <span> @attendee.ExternalPanelistNameEn  </span></p>
+                                    <p class="col-5 text-sm d-block">@attendee.ExternalPanelistEmailAddress </p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <code>@sharedLocalizer["None"]</code>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="text-muted">
+                <b>@localizer["Interpreters"]</b>
+                <div>
+                    @{ if (Model.Interpreters != null && Model.Interpreters.Count > 0)
+                        {
+                            int count = 1;
+                            @foreach (var inp in Model.Interpreters)
+                            {
+                                <div class="row">
+                                    <p class="col-1 text-sm d-block"><b>@(count++)</b></p>
+                                    <p class="col-5 text-sm d-block">@inp.EmailAddress</p>
+                                    <p class="col-5 text-sm d-block"> <span> @inp.FromLanguage.Name  <i class="fa fa-exchange-alt" aria-hidden="true"></i>  @inp.ToLanguage.Name </span></p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <code>@sharedLocalizer["None"]</code>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="text-muted">
+                <b>@localizer["WebinarLink"]</b>
+                <div>
+                    <p class="text-sm d-block">
+                        @if (!string.IsNullOrWhiteSpace(Model.WebinarUrl) && Model.ApprovalStatus == ApprovalStatus.Approved)
+                        {
+                            <a class="text-sm" href="@(Model.WebinarUrl)">@localizer["WebinarLink"]</a>
+                            <span class="right copyUrl badge badge-info" onclick="CopyUrl('@(Model.WebinarUrl)','@culture')">
+                                <i class="fas fa-copy "></i>
+                                <br />
+                                @sharedLocalizer["Copy"]
+                            </span>
+                             <p class="text-sm d-block"><b>@localizer["Password"]:</b>  @Model.ZoomWebinarPassword</p>
+                        }
+                        else
+                        {
+                            <code>@sharedLocalizer["NoUrlProvided"]</code>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-muted">
+                <b>@localizer["RegistrationUrl"]</b>
+                <div>
+                    <p class="text-sm d-block">
+                        @if (!string.IsNullOrWhiteSpace(Model.RegistrationUrl) && Model.ApprovalStatus == ApprovalStatus.Approved)
+                        {
+                            <a class="text-sm" href="@(Model.RegistrationUrl)">@localizer["RegistrationUrl"]</a>
+                            <span class="right copyUrl badge badge-info" onclick="CopyUrl('@(Model.RegistrationUrl)','@culture')">
+                                <i class="fas fa-copy "></i>
+                                <br />
+                                @sharedLocalizer["Copy"]
+                            </span>
+                            <p class="text-sm d-block"><b>@localizer["Password"]:</b>  @Model.ZoomWebinarPassword</p>
+                        }
+                        else
+                        {
+                            <code>@sharedLocalizer["NoUrlProvided"]</code>
+                        }
+                    </p>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="col-12 col-md-12 col-lg-4 order-1 order-md-1">
+
+
+            <div class="text-muted">
+                <b class="mt-5 text-muted">@localizer["WebinarRequirements"]  </b>
+                <div>
+                    @{ if (Model.WebinarRequirements.Count > 0)
+                        {
+                            int count = 1;
+                            <div class="row">
+                                @foreach (var req in Model.WebinarRequirements)
+                                {
+                                    <p class="col-1 text-sm d-block"><b>@(count++)</b></p>
+                                    <p class="col-10 text-sm d-block">@req.Details</p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+
+                            <code>@localizer["None"]</code>
+                        }
+                    }
+                </div>
+            </div>
+
+
+            <div class="text-muted">
+                @if (!string.IsNullOrWhiteSpace(Model.Agenda))
+                {
+                    <a id="printAgenda" class="btn btn-default btn-sm  float-right">
+                        <i class="fas fa-print"></i>
+                    </a>
+                }
+                <b class="mt-5 text-muted">
+                    @localizer["Agenda"]
+                </b>
+                <div>
+                    @if (!string.IsNullOrWhiteSpace(Model.Agenda))
+                    {
+                        <div class="card-body p-0" id="Agenda">
+                            @Html.Raw(@Model.Agenda)
+                        </div>
+                    }
+                    else
+                    {
+
+                        <code>@localizer["None"]</code>
+
+                    }
+                </div>
+            </div>
+
+            <div class="text-muted">
+                <b>@localizer["WebinarFiles"]</b>
+                @{
+                    if (Model.WebinarAttachments != null && Model.WebinarAttachments.Count > 0)
+                    {
+                        <ul class="list-unstyled">
+                            @foreach (var attachment in Model.WebinarAttachments)
+                            {
+                                <li>
+                                    <a href="@Url.Content($"~/{attachment.FilePath}")" target="_blank" class="btn-link text-secondary text-sm d-block" title="@Html.Encode(attachment.FileName)">
+                                        <i class="far fa-fw fa-file-download"></i>
+                                        @attachment.FileName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div>
+                            <code>@localizer["None"]</code>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+
+
+        @if ((Model.Date > DateTime.Now.Date || (Model.Date == DateTime.Now.Date && Model.Time_From.Ticks > DateTime.Now.TimeOfDay.Ticks)) && User.IsInRole(Roles.Admin) && Model.ApprovalStatus == ApprovalStatus.Pending)
+        {
+            <div class="approval text-muted col-12 col-md-12 col-lg-12 order-3 order-md-3">
+                <div class="form-group">
+                    <label>@localizer["Reason"]</label>
+                    <textarea class="reason form-control" rows="3" maxlength="200" placeholder="@localizer["Reason"]" style="margin-top: 0px; margin-bottom: 0px; max-height: 200px;"></textarea>
+                </div>
+                <div>
+                    <a class="btn btn-app bg-success float-right"  onclick='changeApprovalStatus(this)'   data-status="@ApprovalStatus.Approved" data-id="@Model.Id">
+                        <i class="fas fa-check"></i> @localizer["Approve"]
+                    </a>
+                    <a class="btn btn-app bg-danger float-right"  onclick='changeApprovalStatus(this)'  data-status="@ApprovalStatus.Rejected" data-id="@Model.Id">
+                        <i class="fas fa-times"></i> @localizer["Reject"]
+                    </a>
+                    <a class="btn btn-app bg-danger"  onclick='changeApprovalStatus(this)'  data-status="@ApprovalStatus.Cancelled" data-id="@Model.Id">
+                        <i class="fas fa-trash"></i> @sharedLocalizer["Cancel"]
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-12 col-md-12 col-lg-8 order-1 order-md-1">
+                <div class="text-muted">
+                    <b>@localizer["Reason"]</b>
+                    @if (!string.IsNullOrEmpty(Model.Reason))
+                    {
+                        <p class="text-sm d-block">
+                            @Model.Reason
+                        </p>
+                    }
+                    else
+                    {
+                        <div>
+                            <code>@localizer["None"]</code>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (Model.Date > DateTime.Now.Date || (Model.Date == DateTime.Now.Date && Model.Time_From.Add(TimeSpan.FromMinutes(15)).Ticks > DateTime.Now.TimeOfDay.Ticks) 
+            && (Model.ApprovalStatus == ApprovalStatus.Pending || Model.ApprovalStatus == ApprovalStatus.Approved) && (User.IsInRole(Roles.Admin) )) @*|| Convert.ToInt32(User.FindFirst(ClaimTypes.PrimarySid).Value) == item.value.HostId) // only admin can remove*@
+            {
+                <div class="text-muted col-12 col-md-12 col-lg-12 order-3 order-md-3">
+                    <div>
+                        <a class="btn btn-app bg-danger float-right" onclick='changeApprovalStatus(this)' data-status="@ApprovalStatus.Cancelled" data-id="@Model.Id">
+                            <i class="fas fa-trash"></i> @sharedLocalizer["Cancel"]
+                        </a>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+</div>
+
+
+<!-- Toastr -->
+<script>
+
+
+    $(function () {
+
+        $(".overlay").show();
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        $(".overlay").hide();
+
+      
+    });
+</script>

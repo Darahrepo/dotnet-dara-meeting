@@ -1,0 +1,66 @@
+﻿@model MeetingScheduler.UI.Models.MeetingRoomVm
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+
+@{
+    ViewData["Title"] = localizer["Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="info-box transparent">
+        <span class="info-box-icon bg-info"><i class="fa fa-pen"></i></span>
+        <div class="info-box-content">
+            <h1 class="m-0">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</div>
+
+<div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        @*<div class="card-header">
+                            <h3 class="card-title">DataTable with default features</h3>
+                        </div>*@
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form asp-controller="MeetingRoom" asp-action="Edit" method="post">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" asp-for="NameEn">@localizer["NameEn"]</label>
+                                        <input type="text" class="col-sm-10 form-control" asp-for="NameEn" placeholder="@localizer["NameEn_ph"]">
+                                        <span class="text-danger" asp-validation-for="NameEn"></span>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" asp-for="NameAr">@localizer["NameAr"]</label>
+                                        <input type="text" class="col-sm-10 form-control" asp-for="NameAr" placeholder="@localizer["NameAr_ph"]">
+                                        <span class="text-danger" asp-validation-for="NameAr"></span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-info">@sharedLocalizer["Save"]</button>
+                                    <a asp-action="Index" class="btn btn-default float-right">@sharedLocalizer["Cancel"]</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

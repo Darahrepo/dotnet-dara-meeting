@@ -1,0 +1,294 @@
+﻿@using System.Globalization;
+@using System.Security.Claims;
+@using MeetingScheduler.Identity;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Identity
+@model MeetingScheduler.UI.Models.MeetingVm
+@using MeetingScheduler.Domain.Enums;
+@using Microsoft.AspNetCore.Authorization;
+@addTagHelper *, MeetingScheduler.UI
+@inject IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+
+@{
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+}
+@{
+    ViewData["Title"] = localizer["Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="info-box transparent">
+        <span class="info-box-icon bg-info"><i class="fa fa-plus-square"></i></span>
+        <div class="info-box-content">
+            <h1 class="m-0">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="overlay-wrapper">
+        <div class="overlay"><i class="fas fa-3x fa-spinner fa-pulse"></i><div class="text-bold pt-2"></div></div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div asp-validation-summary="All"></div>
+            <form asp-controller="Meeting" asp-action="Create" id="form" method="post" enctype="multipart/form-data">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-lg-9 order-2">
+                                <div class="card card-grey card-outline card-outline-tabs">
+                                    <div class="card-header p-0 pt-1 border-bottom-0">
+                                        <div class="col-12 col-md-12 col-lg-12 nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                            <a class="nav-link active " id="custom-tabs-three-Details-tab" data-toggle="tab" href="#custom-tabs-three-Details" role="presentation" aria-controls="custom-tabs-three-Details" aria-selected="true">@localizer["Details"]</a>
+                                            <a class="nav-link disabled" id="custom-tabs-three-Additional-tab" data-toggle="tab" href="#custom-tabs-three-Additional" role="presentation" aria-controls="custom-tabs-three-Additional" aria-selected="false">@localizer["Additional"]</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div>
+                                            <code id="message"> </code>
+                                        </div>
+
+                                        <div class="tab-content" id="custom-tabs-three-tabContent">
+                                            <div class="tab-pane fade show active" id="custom-tabs-three-Details" role="tabpanel" aria-labelledby="custom-tabs-three-Details-tab">
+                                                
+                                                <div class="form-group clearfix">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <label>  @sharedLocalizer["Subject"] </label>
+                                                            <input type="text" required="required" asp-for="Subject" class="form-control" placeholder=" @localizer["Meeting Subject"]">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div>
+                                                    <code id="attendeesNotChosenMessage"> </code>
+                                                </div>
+
+                                                <div class="form-group  mt-3 clearfix">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <label> @localizer["Meeting Host"]</label>
+                                                            <select asp-for="HostId" onchange="StartChangingValues()" asp-items="@(new SelectList(Model.HostList, "Id", "FullNameEn", Model.HostId))" id="hostId" class="form-control select2bs4" style="width: 100%;">
+                                                            </select>
+                                                            <span class="text-danger" asp-validation-for="HostId"></span>
+                                                        </div>
+                                                        
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <label>@localizer["Internal Attendees"]</label>
+                                                            <div class="select2-purple">
+                                                                <select class="select2" multiple="multiple" data-placeholder="@localizer["SelectEmployee_ph"]"
+                                                                        asp-for="MeetingInternalAttendeesId" asp-items="@(new SelectList(Model.EmployeesList, "Id", "FullNameEn"))" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row" id="externalAttendeesDiv">
+                                                    <div class="col-sm-12">
+                                                        <label> @localizer["External Attendees"]</label>
+                                                        <div id="externalAttendeesPartialDiv">
+                                                            <partial name="_ExternalAttendeesPartial" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                              
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <label for="Date">@sharedLocalizer["Date"]</label>
+                                                            <div class="date" id="reservationdate" onchange="StartChangingValues()" asp-for="Date" data-target-input="nearest">
+                                                                <div class="input-group-append" id="reservationdateInput" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                                    <input asp-for="Date" name="Date" type="datetime" id="date" class="form-control datetimepicker-input" data-date-container='#reservationdateInput' data-target="#reservationdate" />
+                                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                </div>
+                                                                <span class="text-danger" asp-validation-for="Date"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-4">
+                                                            <label for="From">@sharedLocalizer["From"]</label>
+                                                            <div class="date" id="timepickerFrom" onchange="StartChangingValues()" asp-for="From" data-target-input="nearest">
+                                                                <div class="input-group-append" id="startTimeInput" data-target="#timepickerFrom" data-toggle="datetimepicker">
+                                                                    <input type="text" name="Time_From" required id="Time_From" class="form-control datetimepicker-input" data-date-container='#startTimeInput' data-target="#timepickerFrom" />
+                                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                                </div>
+                                                                <span class="text-danger" asp-validation-for="Time_From"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-4">
+                                                            <label for="To">@sharedLocalizer["To"]</label>
+                                                            <div class="date" id="timepickerTo" onchange="StartChangingValues()" asp-for="To" data-target-input="nearest">
+                                                                <div class="input-group-append" id="endTimeInput" data-target="#timepickerTo" data-toggle="datetimepicker">
+                                                                    <input name="Time_To" required type="text" id="Time_To" class="form-control datetimepicker-input" data-date-container='#endTimeInput' data-target="#timepickerTo" />
+                                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                                </div>
+                                                                <span class="text-danger" asp-validation-for="Time_To"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+
+
+                                                <div class="form-group meeting-location">
+                                                    <label> @localizer["Place"]</label>
+                                                    <div class="col-12 col-md-12">
+                                                        <div id="Location" onchange="StartChangingValues()">
+                                                            <div class="icheck-primary d-inline">
+                                                                <input asp-for="MeetingLocation" id="faceToFace" type="radio" value="@((char)LocationType.FaceToFace)" name="MeetingLocation">
+                                                                <label for="faceToFace">@localizer["FaceToFace"]</label>
+                                                            </div>
+                                                            <div class="icheck-primary d-inline">
+                                                                <input asp-for="MeetingLocation" id="online" type="radio" checked="checked" value="@((char)LocationType.Online)" name="MeetingLocation">
+                                                                <label for="online"> @localizer["Online"]</label>
+                                                            </div>
+                                                            <div class="icheck-primary d-inline">
+                                                                <input asp-for="MeetingLocation" id="both" type="radio" value="@((char)LocationType.Both)" name="MeetingLocation">
+                                                                <label for="both"> @localizer["Both"]  </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-danger" asp-validation-for="MeetingLocationType"></span>
+                                                </div>
+
+                                                <div class="form-group" id="MeetingRoomDdl">
+                                                    <label> @localizer["Meeting Room*"]</label>
+                                                    <div class="col-md-12 col-sm-12" onchange="StartChangingValues()">
+                                                        <select asp-for="MeetingRoomId" asp-items="@(new SelectList(Model.MeetingRoomslist, "Id", "Name"))" id="MeetingRooms" class="form-control select2bs4" style="width: 100%;">
+                                                        </select>
+                                                        <span class="text-danger" asp-validation-for="MeetingRoom"></span>
+                                                    </div>
+                                                </div>
+
+                                               
+
+                                                <div>
+                                                    <a href="#" id="validate" class="btn btn-primary btn-sm tab-action-btn-next  float-right"> 
+                                                       <span class="spinner-border spinner-border-sm form-loader" role="status" aria-hidden="true"></span>
+                                                        <span> @sharedLocalizer["Next"]</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="tab-pane fade" id="custom-tabs-three-Additional" role="tabpanel" aria-labelledby="custom-tabs-three-Additional-tab">
+
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-sm-12" id="itemDiv">
+                                                            <label>  @localizer["RequiredItems"]</label>
+                                                            <div id="requirementsPartialDiv" data-controller="Meeting">
+                                                                <partial name="_RequirementsPartial" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <label>  @sharedLocalizer["Attachments"]  </label>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-12">
+                                                            <div class="form-group" id="IsShared_div">
+                                                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                                    <input type="checkbox" asp-for="IsAttachmentShared" class="custom-control-input" id="share_attachments">
+                                                                    <label class="custom-control-label" for="share_attachments">@sharedLocalizer["IsAttachmentShared"]</label>
+                                                                </div>
+                                                            </div>
+                                                            <div> <span class="direct-chat-timestamp float-left"></span> </div>
+                                                            <div>
+                                                                <main>
+                                                                    <section>
+                                                                        <div id="dropzone">
+                                                                            <div class="dropzone dz-clickable demo-upload">
+                                                                                <div class="dz-message" id="dz-message">
+                                                                                    <i class='fa fa-download'></i>
+                                                                                    @sharedLocalizer["Addfiles"]
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </section>
+                                                                </main>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-12 col-md-12">
+                                                            <div class="col-12">
+                                                                <label>  @localizer["MeetingAgenda"]  </label>
+                                                            </div>
+
+                                                            <textarea asp-for="MeetingAgenda" id="summernote" style="min-height:300px;max-height:700px;"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <a asp-action="Index" class="btn btn-secondary">@sharedLocalizer["Cancel"]</a>
+                                                    <button type="submit" id="submit" class="btn btn-primary btn-sm float-right"> 
+                                                        <span class="spinner-border spinner-border-sm form-loader" role="status" aria-hidden="true"></span>
+                                                         @sharedLocalizer["Submit"]  </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-12 col-lg-3 order-1">
+                                <h4 class="text-primary"><i class="fas fa-cogs"></i>  @localizer["MeetingSettings"] </h4>
+                                <br>
+                                <ul class="list-unstyled">
+                                    <li asp-authorize asp-policy="CeoAccess">
+                                        <div class="form-group" id="IsWebex_div">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                <input type="checkbox" value="true" onchange="StartChangingValues()" asp-for="IsWebex" class="custom-control-input" id="is-webex">
+                                                <label class="custom-control-label" for="is-webex">@localizer["IsZoomOrWebex"]</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @* Deactivated until CEO account is available*@
+@*                                     <li asp-authorize asp-policy="CeoAssistantAccess">
+                                        <div class="form-group" id="IsCeo_div">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                <input type="checkbox" onchange="StartChangingValues()" asp-for="IsCeo" class="custom-control-input" id="is-ceo">
+                                                <label class="custom-control-label" for="is-ceo">@localizer["IsCeo"]</label>
+                                            </div>
+                                        </div>
+                                    </li> *@
+
+                                    <li>
+                                        <div class="form-group" id="IsRegistered_div">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                <input type="checkbox" asp-for="IsRecorded " class="custom-control-input" id="recorded_meeting">
+                                                <label class="custom-control-label" for="recorded_meeting">@localizer["IsRecorded"]</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                   
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+
+@*@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}*@

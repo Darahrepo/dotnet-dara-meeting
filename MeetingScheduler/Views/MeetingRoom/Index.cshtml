@@ -1,0 +1,105 @@
+﻿@model List<MeetingScheduler.UI.Models.MeetingRoomVm>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    ViewData["Title"] = localizer["Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="info-box transparent">
+        <span class="info-box-icon bg-info"><i class="fas fa-door-open"></i></span>
+        <div class="info-box-content">
+            <h1 class="m-0">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <a asp-action="Create" class="btn btn-success float-right">@sharedLocalizer["Create"]</a>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+
+                            <table id="example1" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> @localizer["Name"] </th>
+                                        <th> @sharedLocalizer["Actions"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var count = 0;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td> @(++count) </td>
+                                            <td> <p> @item.NameAr - @item.NameEn </p> </td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm"><i class="fas fa-pen"></i></a>
+
+                                                <a id="delete_btn" onclick="deleteMeetingRoom(@item.Id)" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </div> <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+
+    function deleteMeetingRoom(id) {
+        Swal.fire({
+            title: "@localizer["DeleteTitle"]",
+            text: "@localizer["DeleteText"]",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "@localizer["confirmButtonText"]",
+            cancelButtonText: "@localizer["cancelButtonText"]",
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/MeetingRoom/Delete",
+                    type: "post",
+                    data: { Id: id },
+                    success: function () {
+                        window.location.reload();
+                        swal.fire("@localizer["SuccessDeletionTitle"]", "@sharedLocalizer["DeleteSuccess"]", "success");
+                    },
+                    error: function () {
+                        swal.fire("@sharedLocalizer["Error"]", "@sharedLocalizer["PleaseTryAgain"]", "error");
+                    }
+                })
+            } else {
+                // handle cancel
+            }
+        });
+    }
+</script>

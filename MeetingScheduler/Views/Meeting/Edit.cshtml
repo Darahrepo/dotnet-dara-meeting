@@ -1,0 +1,799 @@
+﻿@model MeetingScheduler.UI.Models.MeetingVm
+@using MeetingScheduler.Domain.Enums;
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var externalAttendeesCount = -1;
+    var requirementsCount = -1;
+}
+<div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Main row -->
+            <form asp-controller="Meeting" asp-action="Edit" method="post" id="form" enctype="multipart/form-data">
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Attendees</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+
+                                    <input type="hidden" asp-for="Id" value="@Model.Id">
+
+                                    <div id="deleted-images-form">
+                                    </div>
+
+                                    <div class="form-group clearfix">
+                                        <label> Meeting Subject </label>
+                                        <input type="text" asp-for="Subject" class="form-control form-control-border border-width-2" placeholder="Subject">
+                                        <span class="text-danger" asp-validation-for="Subject"></span>
+                                    </div>
+
+                                    <div class="form-group clearfix">
+                                        <label> Meeting Host </label>
+                                        <select asp-for="HostId" asp-items="@(new SelectList(Model.EmployeesList, "Id", "FullNameEn", Model.HostId))" class="form-control select2bs4" style="width: 100%;">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> Internal Attendees </label>
+                                        <div class="select2-purple">
+                                            <select class="select2" multiple="multiple" data-placeholder="Select an Employee" asp-for="MeetingInternalAttendeesId"
+                                                    asp-items="@(new SelectList(Model.EmployeesList, "Id", "FullNameEn", Model.MeetingInternalAttendees))" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="MeetingInternalAttendeesId"></span>
+                                    </div>
+
+                                    <div class="form-group" id="externalAttendeesDiv">
+                                        <label> External Attendees </label>
+                                        @{
+                                            @if (Model.ExternalAttendeesList.Count > 0)
+                                            {
+                                                externalAttendeesCount++;
+                                                <div class="row">
+                                                    <input type="hidden" asp-for="ExternalAttendeesList[externalAttendeesCount].Id">
+                                                    <input type="hidden" asp-for="ExternalAttendeesList[externalAttendeesCount].MeetingId" value="@Model.Id">
+
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[externalAttendeesCount].NameAr" class="form-control form-control-border border-width-2" placeholder="Name In Arabic">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[@externalAttendeesCount].ExternalAttendeeNameAr"></span>
+                                                    </div>
+
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[externalAttendeesCount].NameEn" class="form-control form-control-border border-width-2" placeholder="Name In English">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[@externalAttendeesCount].ExternalAttendeeNameEn"></span>
+                                                    </div>
+
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[externalAttendeesCount].EmailAddress" class="form-control form-control-border border-width-2" placeholder="Email Address">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[@externalAttendeesCount].EmailAddress"></span>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <a class="btn btn-default " id="addExternalAttendeeField">
+                                                            <i class="fas fa-plus"></i>
+                                                        </a>
+                                                        <a class="btn btn-default " id="removeExternalAttendeeField">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+
+                                            }
+                                            else
+                                            {
+                                                externalAttendeesCount++;
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[0].NameAr" class="form-control form-control-border border-width-2" placeholder="Name In Arabic">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[0].NameAr"></span>
+                                                    </div>
+
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[0].NameEn" class="form-control form-control-border border-width-2" placeholder="Name In English">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[0].NameEn"></span>
+                                                    </div>
+
+                                                    <div class="col-3">
+                                                        <input type="text" asp-for="ExternalAttendeesList[0].EmailAddress" class="form-control form-control-border border-width-2" placeholder="Email Address">
+                                                        <span class="text-danger" asp-validation-for="ExternalAttendeesList[0].EmailAddress"></span>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <a class="btn btn-default " id="addExternalAttendeeField">
+                                                            <i class="fas fa-plus"></i>
+                                                        </a>
+                                                        <a class="btn btn-default " id="removeExternalAttendeeField">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Details</h3>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <code id="message"> </code>
+                                    <div class="form-group">
+                                        <label>Date*</label>
+                                        <div class="input-group date col-12" id="reservationdate" onchange="StartChangingValues()" data-target-input="nearest">
+                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                <input asp-for="Date" name="Date" type="datetime" class="form-control datetimepicker-input" data-target="#reservationdate" />
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                            <span class="text-danger" asp-validation-for="Date"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>From*</label>
+                                        <div class="input-group date col-12" id="timepickerFrom" onchange="StartChangingValues()" data-target-input="nearest">
+                                            <div class="input-group-append" data-target="#timepickerFrom" data-toggle="datetimepicker">
+                                                <input type="text" name="Time_From" class="form-control datetimepicker-input" data-target="#timepickerFrom" />
+                                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                            </div>
+                                            <span class="text-danger" asp-validation-for="Time_From"></span>
+                                            <input type="hidden" id="setTimeFrom" value="@Model.Time_From" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>To*</label>
+                                        <div class="input-group date col-12" id="timepickerTo" onchange="StartChangingValues()" data-target-input="nearest">
+                                            <div class="input-group-append" data-target="#timepickerTo" data-toggle="datetimepicker">
+                                                <input type="text" name="Time_To" class="form-control datetimepicker-input" data-target="#timepickerTo" />
+                                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                            </div>
+                                            <span class="text-danger" asp-validation-for="Time_To"></span>
+                                            <input type="hidden" id="setTimeTo" value="@Model.Time_To" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> Place </label>
+                                        <div clas="clearfix" id="MeetingLocation" onchange="StartChangingValues()">
+                                            <div class="icheck-primary d-inline">
+                                                <input asp-for="MeetingLocation" id="faceToFace" type="radio" value="@((char)LocationType.FaceToFace)" name="MeetingLocation" class="form-control" />
+                                                <label for="faceToFace">Face-To-Face</label>
+                                            </div>
+                                            <div class="icheck-primary d-inline">
+                                                <input asp-for="MeetingLocation" id="online" type="radio" value="@((char)LocationType.Online)" name="MeetingLocation" class="form-control" />
+                                                <label for="online"> Online </label>
+                                            </div>
+                                            <div class="icheck-primary d-inline">
+                                                <input asp-for="MeetingLocation" id="both" type="radio" value="@((char)LocationType.Both)" name="MeetingLocation" class="form-control" />
+                                                <label for="both"> Both </label>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="MeetingLocation"></span>
+                                    </div>
+
+                                    <div class="form-group clearfix" onchange="StartChangingValues()" id="MeetingRoomDdl">
+                                        <label> Meeting Room </label>
+                                        <select asp-for="MeetingRoomId" name= "MeetingRoomId" asp-items="@(new SelectList(Model.MeetingRoomslist, "Id", "NameEn"))" class="form-control select2bs4" style="width: 100%;">
+                                        </select>
+                                        <span class="text-danger" asp-validation-for="MeetingRoom"></span>
+                                    </div>
+
+                                    <div class="form-group clearfix " id="MeetingLink">
+                                        <label asp-for="MeetingLink" >Meeting Link</label>
+                                        <input type="url" asp-for="MeetingLink" name="MeetingLink" class="form-control">
+                                        <span class="text-danger" asp-validation-for="MeetingLink"></span>
+                                    </div>
+                                    @*/.card-body*@
+                                </div>
+                                @*/.card*@
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Additional</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="card card-default">
+                                            <div class="card-header">
+                                                <h3 class="card-title"> Attachments </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="actions" class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="btn-group w-100">
+                                                            <span class="btn btn-success col fileinput-button">
+                                                                <i class="fas fa-plus"></i>
+                                                                <span>Add files</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="table table-striped files" id="previews">
+                                                    <div id="template" class="row mt-2">
+                                                        <div class="col-auto">
+                                                            <span class="preview"><img src="data:," alt="" data-dz-thumbnail /></span>
+                                                        </div>
+                                                        <div class="col d-flex align-items-center">
+                                                            <p class="mb-0">
+                                                                <span class="lead" data-dz-name></span>
+                                                                (<span data-dz-size></span>)
+                                                            </p>
+                                                            <strong class="error text-danger" data-dz-errormessage></strong>
+                                                        </div>
+                                                        <div class="col-auto d-flex align-items-center">
+                                                            <div class="btn-group">
+                                                                <button data-dz-remove class="btn btn-danger dz-remove">
+                                                                    <i class="fas fa-trash"></i>
+                                                                    <span>Delete</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="card card-default">
+                                            <div class="card-header">
+                                                <h3 class="card-title"> Required items </h3>
+                                            </div>
+                                            <div class="card-body" id="itemDiv">
+                                                @{
+                                                    if (Model.MeetingRequirements.Count > 0)
+                                                    {
+                                                        foreach (var ext in Model.MeetingRequirements)
+                                                        {
+                                                            requirementsCount++;
+                                                            <input type="hidden" asp-for="MeetingRequirements[requirementsCount].Id">
+                                                            <div class="row">
+                                                                <div class="col-4">
+                                                                    <input asp-for="MeetingRequirements[requirementsCount].ItemName" type="text" class="form-control form-control-border border-width-2" placeholder="Item Name">
+                                                                    <span class="text-danger" asp-validation-for="MeetingRequirementsList[@requirementsCount].ItemName"></span>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <a class="btn btn-default " id="addItemField">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </a>
+                                                                    <a class="btn btn-default " id="removeItemField">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        requirementsCount++;
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <input asp-for="MeetingRequirements[0].ItemName" name="MeetingRequirements[requirementsCount].ItemName" type="text" class="form-control form-control-border border-width-2" placeholder="Item Name">
+                                                                <span class="text-danger" asp-validation-for="MeetingRequirements[0].ItemName"></span>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <a class="btn btn-default " id="addItemField">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </a>
+                                                                <a class="btn btn-default " id="removeItemField">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="card card-default">
+                                            <div class="card-header">
+                                                <h3 class="card-title"> Meeting Agenda </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <textarea asp-for="MeetingAgenda" id="summernote" placeholder="Insert Meeting Agenda" style="min-height:300px;max-height:700px;"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                                <input type="submit" id="submit" value="submit" class="btn btn-success float-right">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </form>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    var preventSubmit = false;
+    var myDropzone;
+
+    $('#submit').on('click', function (e) {
+        if (preventSubmit) {
+            message = $("#message");
+            $('html, body').animate({
+                scrollTop: message.offset().top
+            }, 1000);
+        }
+        else {
+            if (myDropzone.getQueuedFiles().length > 0) {
+                e.preventDefault();
+                myDropzone.processQueue();
+            }
+        }
+    });
+
+    //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 2000;  //time in ms, 5 second for example
+    var $input = $('#myInput');
+
+    //on keyup, start the countdown
+    function StartChangingValues() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(CheckAvailability, doneTypingInterval); //run this if user has no changes in 6 seconds
+    };
+
+    function CheckAvailability() {
+        var dateNow = new Date();
+
+        var to = $('#to').val();
+        var from = $('#from').val();
+        var date = $('#date').val();
+        var hostId = $("#hostId").val();
+        var room = 0;
+
+        var MeetingLocation = $('input[name="MeetingLocation"]:checked').val();
+        if (MeetingLocation == "@((char)LocationType.Both)" || (MeetingLocation == "@((char)LocationType.FaceToFace)")) {
+            room = $("#MeetingRoomId").val();
+        };
+
+        if (to != '' && from != '' && hostId > 0){
+            preventSubmit = true;
+            $.ajax({
+                type: "post",
+                url: "/Meeting/CheckAvailability",
+                data: { to: to, from: from, date: date, room: room, hostId: hostId },
+                dataType: 'json',
+                success: function (response) {
+                    var message = $("#message");
+                    if (!response.meetingCanBeReserved) {
+                        preventSubmit = true;
+                        message.css("color", "red");
+                        message.html(response.message);
+                        $('html, body').animate({
+                            scrollTop: message.offset().top
+                        }, 1000);
+                    }
+                    else {
+                        message.html(response.message);
+                        preventSubmit = false;
+                    }
+                }
+            });
+        }
+    };
+
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+        // Summernote
+        $('#summernote').summernote({
+            minHeight: 300,
+            maxHeight: 500
+        })
+    })
+
+    $(function () {
+        //Date picker
+        var dateNow = new Date();
+
+        $('#reservationdate').datetimepicker({
+            format: 'yyyy-MM-DD',
+            daysOfWeekDisabled: [5, 6],
+            minDate: dateNow
+        });
+
+
+        var timeFormat = 'HH:mm';
+        var timeFrom ="@(Model.Time_From)";
+        var timeTo = "@(Model.Time_To)";
+        var maxTime = "24:00:00";
+        var date = "@(Model.Date)";
+
+        if (date === dateNow.getDate()) {
+            $('#timepickerFrom').data("datetimepicker").minDate(dateNow.getTime());
+        }
+
+        //Timepicker
+        $('#timepickerFrom').datetimepicker({
+            format: 'LT',
+            format: timeFormat,
+            autoclose: true,
+        })
+        $('#timepickerTo').datetimepicker({
+            format: 'LT',
+            format: timeFormat,
+            autoclose: true,
+            //val: $('#timepickerTo').data("datetimepicker").date(timeTo),
+            minDate: $('#timepickerFrom').data("datetimepicker").date(),
+            maxTime: maxTime
+        })
+
+        $("#timepickerFrom").data('datetimepicker').date(timeFrom);
+        $('#timepickerTo').data("datetimepicker").date(timeTo);
+        $('#reservationdate').data("datetimepicker").date(date);
+        $('#timepickerTo').data("datetimepicker").minDate(timeFrom);
+        //datetimepicker
+
+        //Bootstrap Duallistbox
+        $('.duallistbox').bootstrapDualListbox()
+
+
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
+
+    })
+
+
+    $('#timepickerFrom').on("change.datetimepicker", ({ date, oldDate }) => {
+        $('#timepickerTo').data("datetimepicker").minDate(date);
+    });
+
+
+    var previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+    document.addEventListener("DOMContentLoaded", function ()
+    {
+
+        Dropzone.autoDiscover = false;
+
+        function myParamName() {
+            return "MeetingFiles";
+        }
+
+        myDropzone = new Dropzone('#form', { // Make the whole body a dropzone
+            url: "/Meeting/Edit/", //"/target-url", // Set the url
+            thumbnailWidth: 80,
+            thumbnailHeight: 80,
+            paramName: (myParamName),
+            uploadMultiple: true,
+            parallelUploads: 20,
+            previewTemplate: previewTemplate,
+            autoQueue: true, // Make sure the files aren't queued until manually added
+            autoProcessQueue: false, // Make sure the files aren't queued until manually added
+            previewsContainer: "#previews", // Define the container to display the previews
+            clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.,
+            //success: function (file, response) {
+            //    if (response.responseMessage.message != '') {
+            //        Toast.fire({
+            //            icon: response.type,
+            //            title: response.message
+            //        })
+            //    }
+            //    window.location.href = response.newUrl;
+            //},
+            removedfile: function (file) {
+                // Only files that have been programmatically added should
+                // have a url property.
+                if (file.url && file.url.trim().length > 0) {
+                    $("<input type='hidden'>").attr({
+                        id: 'DeletedImageUrls',
+                        name: 'DeletedImageUrls'
+                    }).val(file.url).appendTo('#deleted-images-form');
+                    file.previewElement.remove();
+                }
+            },
+            init: function () {
+                var thisDropzone = this;
+
+                //Call the action method to load the images from the server
+                var attachments = @Model.MeetingAttachments.Count;
+                if (attachments > 0) {
+                    attachments = @Html.Raw(Json.Serialize(Model.MeetingAttachments));
+                    $.each(attachments, function (index, item) {
+                        //// Create the mock file:
+                        var mockFile = {
+                            // flag: processing is complete
+                            processing: true,
+                            // flag: file is accepted (for limiting maxFiles)
+                            accepted: true,
+                            // name of file on page
+                            name: item.fileName,
+                            // image size
+                            size: item.fileSize,
+                            // image type
+                            type: item.fileType,
+                            // flag: status upload
+                            status: Dropzone.Added,
+                            // file: url
+                            url: item.filePath,
+                        };
+
+                        var thumbnail_url =  item.path;
+                        var response = { status: "success" };
+
+                        // Push file to collection
+                        // Emulate event to create interface
+                        thisDropzone.emit("addedfile", mockFile);
+
+
+                        thisDropzone.emit("thumbnail", mockFile, window.location.origin + "/" +thumbnail_url);
+
+                        // If it needs resizing:
+                        // Add status processing to file
+                        thisDropzone.emit("processing", mockFile);
+
+                        // Add status success to file AND RUN EVENT success from responce
+                        thisDropzone.emit("success", mockFile);
+
+                        // Add status complete to file
+                        thisDropzone.emit("complete", mockFile);
+
+                        thisDropzone.files.push(mockFile);
+
+                    });
+                }
+
+                
+            }
+        });
+
+      
+    });
+
+    function openAttachment(url) {
+        var largeImage = document.getElementById('largeImage');
+        largeImage.style.display = 'block';
+        largeImage.style.width = 200 + "px";
+        largeImage.style.height = 200 + "px";
+        var url = largeImage.getAttribute('src');
+        window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
+    }
+
+    $(function () {
+        myDropzone.on("successmultiple", function (file, response) {
+            save_responses(response);
+        });
+
+        myDropzone.on("completemultiple", function () {
+            if (this.getQueuedFiles().length == 0 &&
+                this.getUploadingFiles().length == 0) {
+                process_responses(this.getAcceptedFiles());
+            }
+        });
+    })
+    $(function () {
+        var ext_att_max_fields = 10; //maximum input boxes allowed
+        var ext_att_wrapper = $("#externalAttendeesDiv");
+        var x = @Model.ExternalAttendeesList.Count; //initial text box count
+
+        $(ext_att_wrapper).on("click", "#addExternalAttendeeField", function (e) {//on add input button click
+            e.preventDefault();
+            if (x < ext_att_max_fields) { //max input box allowed
+                var clickedButtonIndex = $(this).index();
+                $("#externalAttendeesDiv").append(`
+                    <div class="row">
+                    <input type="hidden" asp-for="ExternalAttendeesList[externalAttendeesCount].MeetingId" value="@Model.Id">
+                        <div class="col-3">
+                            <input type="text" asp-for = "ExternalAttendeesList[` + x + `].NameAr"  name = "ExternalAttendeesList[` + x + `].NameAr" class="form-control form-control-border border-width-2"  placeholder="Name In Arabic">
+                            <span class="text-danger" asp-for =  "ExternalAttendeesList[` + x + `].NameAr" data-valmsg-for="ExternalAttendeesList[` + x + `].NameAr" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" name = "ExternalAttendeesList[` + x + `].NameEn"  asp-for = "ExternalAttendeesList[` + x + `].NameEn" class="form-control form-control-border border-width-2"  placeholder="Name In English">
+                            <span class="text-danger" name= "ExternalAttendeesList[` + x + `].NameEn" data-valmsg-for= "ExternalAttendeesList[` + x + `].NameEn" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" name = "ExternalAttendeesList[`+ x + `].EmailAddress" asp-for = "ExternalAttendeesList[` + x + `].EmailAddress" class="form-control form-control-border border-width-2 " placeholder="Email Address">
+                            <span class="text-danger" data-valmsg-for= "ExternalAttendeesList[` + x + `].EmailAddress" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-default" id = "addExternalAttendeeField">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a class="btn btn-default" id = "removeExternalAttendeeField">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                `); //add input box
+                x++;
+            }
+        });
+
+
+        $("#form").removeData("validator").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse('#form');
+
+
+        $(ext_att_wrapper).on("click", "#removeExternalAttendeeField", function (e) { //user click on remove text
+            e.preventDefault();
+            if (x > 1) {
+                $(this).parent('div').parent('div').remove();
+                x--;
+            } else {
+                $(this).parent('div').parent('div').remove();
+                x--;
+                $("#externalAttendeesDiv").append(`
+                        <div class="row">
+                        <input type="hidden" asp-for="ExternalAttendeesList[externalAttendeesCount].MeetingId" value="@Model.Id">
+                            <div class="col-3">
+                                <input type="text" asp-for = "ExternalAttendeesList[` + x + `].NameAr"  name = "ExternalAttendeesList[` + x + `].NameAr" class="form-control form-control-border border-width-2"  placeholder="Name In Arabic">
+                                <span class="text-danger" asp-for =  "ExternalAttendeesList[` + x + `].NameAr" data-valmsg-for="ExternalAttendeesList[` + x + `].NameAr" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-3">
+                                <input type="text" name = "ExternalAttendeesList[` + x + `].NameEn"  asp-for = "ExternalAttendeesList[` + x + `].NameEn" class="form-control form-control-border border-width-2"  placeholder="Name In English">
+                                <span class="text-danger" name= "ExternalAttendeesList[` + x + `].NameEn" data-valmsg-for= "ExternalAttendeesList[` + x + `].NameEn" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-3">
+                                <input type="text" name = "ExternalAttendeesList[`+ x + `].EmailAddress" asp-for = "ExternalAttendeesList[` + x + `].EmailAddress" class="form-control form-control-border border-width-2 " placeholder="Email Address">
+                                <span class="text-danger" data-valmsg-for= "ExternalAttendeesList[` + x + `].EmailAddress" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-3">
+                                <a class="btn btn-default" id = "addExternalAttendeeField">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                                <a class="btn btn-default" id = "removeExternalAttendeeField">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>`
+                ); //add input box
+                x++;
+            }
+        })
+    });
+
+    $(function () {
+        var item_max_fields = 4; //maximum input boxes allowed
+
+        var x = @Model.MeetingRequirements.Count; //initial text box count; //initial text box count
+        $("#itemDiv").on("click", "#addItemField", function (e) {//on add input button click
+            e.preventDefault();
+            if (x < item_max_fields) { //max input box allowed
+                $("#itemDiv").append(
+                    `<div class="row">
+                        <div class="col-4">
+                            <input name="MeetingRequirements[`+ x + `].ItemName" asp-for="MeetingRequirements[` + x + `].ItemName" type="text" class="form-control form-control-border border-width-2" placeholder="Item Name">
+                            <span class="text-danger" data-valmsg-for= "MeetingRequirements[`+ x + `].ItemName" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-default" id = "addExternalAttendeeField">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a class="btn btn-default" id = "removeItemField">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>`
+                ); //add input box
+                x++; //text box increment
+
+            }
+        });
+
+        $("#form").removeData("validator").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse('#form');
+        $("#itemDiv").on("click", "#removeItemField", function (e) { //user click on remove text
+            e.preventDefault();
+            if (x > 1) {
+                $(this).parent('div').parent('div').remove();
+                x--;
+            }
+            else {
+                $(this).parent('div').parent('div').remove();
+                x--;
+                $("#itemDiv").append(
+                    `<div class="row">
+                        <div class="col-4">
+                            <input name="MeetingRequirements[`+ x + `].ItemName" asp-for="MeetingRequirements[` + x + `].ItemName" type="text" class="form-control form-control-border border-width-2" placeholder="Item Name">
+                            <span class="text-danger" data-valmsg-for= "MeetingRequirements[`+ x + `].ItemName" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-default" id = "addItemField">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a class="btn btn-default" id = "removeItemField">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>`
+                );
+                x++;
+            }
+        })
+    });
+
+    $(function () {
+
+        $('input[type="radio"]').on('change', function () {
+            if ($(this).attr("value") == "@((char)LocationType.FaceToFace)") {
+                $("#MeetingLink").prop('required', false);
+                $("#MeetingLink").hide();
+                $("#MeetingRoomDdl").prop('required', true);
+                $("#MeetingRoomDdl").show();
+
+            }
+
+            if ($(this).attr("value") == "@((char)LocationType.Online)") {
+                $("#MeetingRoomDdl").prop('required', false);
+                $("#MeetingRoomDdl").hide();
+                $("#MeetingLink").prop('required', true);
+                $("#MeetingLink").show();
+            }
+
+            if ($(this).attr("value") == "@((char)LocationType.Both)") {
+                $("#MeetingRoomDdl").show();
+                $("#MeetingLink").show();
+                $("#MeetingRoomDdl").prop('required', true);
+                $("#MeetingLink").prop('required', true);
+                }
+        });
+
+        var value = "@(Model.MeetingLocation)";
+        $("input[type='radio'][value=" + value + "]").trigger('click');
+
+
+    })
+</script>

@@ -1,0 +1,219 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\dist\css\rtl\rtlTest\**" />
+    <Compile Remove="wwwroot\docs\**" />
+    <Compile Remove="wwwroot\plugins\bs-custom-file-input\**" />
+    <Content Remove="wwwroot\dist\css\rtl\rtlTest\**" />
+    <Content Remove="wwwroot\docs\**" />
+    <Content Remove="wwwroot\plugins\bs-custom-file-input\**" />
+    <EmbeddedResource Remove="wwwroot\dist\css\rtl\rtlTest\**" />
+    <EmbeddedResource Remove="wwwroot\docs\**" />
+    <EmbeddedResource Remove="wwwroot\plugins\bs-custom-file-input\**" />
+    <None Remove="wwwroot\dist\css\rtl\rtlTest\**" />
+    <None Remove="wwwroot\docs\**" />
+    <None Remove="wwwroot\plugins\bs-custom-file-input\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Meeting\Edit.cshtml" />
+    <Content Remove="Views\Shared\index.cshtml" />
+    <Content Remove="Views\Shared\index2.cshtml" />
+    <Content Remove="Views\Shared\index3.cshtml" />
+    <Content Remove="wwwroot\js\functions.js" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\02fd4dc3-dd03-400a-9c32-e96364d1bf98.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\04a2ae37-c2fa-48fa-8fd8-d4df5acdf8b8.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\0a3e0e5b-c8cf-43c5-a1e4-cbf1f5ba497a.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\0f7b2163-145b-4f13-ba9a-9a581b02be3f.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\0f884a5d-b624-467b-a21d-7f1db94c5f26.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\18df9c4a-458e-41f4-b28c-91c8351cab6f.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\1e1180ad-b4fd-4471-824f-2436a2161795.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\1f385d08-7be0-46aa-93ca-2aa7d703f3d6.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\20a766c2-380c-429e-a5f9-13ab10457f86.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\2524f645-0c6e-4e87-b8c9-49bbf9c24718.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\260507db-d4c9-42e8-b184-be7b9e35131b.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\2a5bdce7-18ec-46fb-bbee-561706fecd11.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\2c12f748-c9f7-4042-b7fe-6e57d5490b7e.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\37f54903-f2b4-4ef7-892b-1f5d7fb80a6a.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\385a2c50-0ebb-4624-bc82-5890983252ed.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\3916bca1-7b1d-4be8-bb6b-965cfddbb12e.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\398eae39-3171-43bd-a895-a2509e563c76.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\3a2915a9-1d5c-4c73-a6b9-25c90f07b4a5.jpg" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\3aff7ed8-b720-4d28-84e2-100a529ceb2d.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\3d9be499-04e0-40be-b780-2cac6977924b.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\486e7218-0138-422c-96e9-4c57b068cf4c.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\49dad0b7-dcf9-40ad-828f-a52654b80d09.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\4e41003a-fbd0-4826-8d0b-506329c734fb.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\53c2a19e-c9a7-4541-9ba9-28beb9bb1caa.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\544a1e31-8e41-4260-9390-7d705cc4aa80.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\57d4326c-69cc-4c4e-990a-b41991b7402b.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\59cbcec5-b88d-4688-8861-c2db559c3d1d.jpg" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\649d90e8-29f2-476b-aac9-161cd5820c16.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\690dabdd-3500-47fa-a9f5-21b08c007b7a.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\6b577598-dea4-44fa-91cb-92fe4ff043f6.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\6cbb275b-88ab-4fb3-a700-b0fcf7129e17.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\6daeb7f5-f0ee-47cb-ba53-0cfa46f62f00.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\71e71c78-2ec3-481c-9cae-86b4e38a39e0.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\788c01a7-e978-4b9a-ac88-8b71b236a02f.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\79fad8be-4a77-47c9-abba-d7c8eb6b87af.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\802a28c8-f4b1-44fd-9f16-0b9e3624c6cd.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\81a5560b-2474-447d-9ccc-99acf8c14455.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\84dad44d-d63d-4b83-af4b-0d967a9f8550.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\84e8e9f1-40be-4f22-86c3-3c7de956fdef.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\86d75957-7d2c-4c13-a910-da24fc776722.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\8757182d-fb3c-498a-b38d-ba381246930c.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\892a49a6-f32a-4b1e-851e-c39c4515ee89.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\8bddba30-6a14-4a0c-af3f-d7c2e1f92ca9.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\8c985c29-631d-4956-a85b-0a286186c4cb.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\93e44865-87db-4808-941e-48050364a82b.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\96e65fd3-dde7-4e52-bb64-4dbc5832997d.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\9a90e633-a53a-4b0f-80cd-26011e37b8ec.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\9beac6ac-9648-4540-95b6-5f077c7bf5e2.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\9dc09a42-0f80-44da-9811-f42c668d9f9f.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\a0148943-0fde-4027-996c-dbdc8a1c40b1.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\a140c348-e503-4004-900b-e43bb727db86.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\a8a43244-9426-41c7-8a9e-4afd2a9e3504.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\ac9ba24c-8778-4a10-99f7-a509cf2dddae.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\adc5c9df-8c3c-4eb5-99b7-6cea19907ce1.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\afcade9c-f6f5-43b5-89ee-cddefc081cd3.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\b628e4a5-d4c8-49eb-90b6-22ee421d261a.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\ba8e64e7-f6da-42f3-ada7-c073bcc98530.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\bd83def6-5829-43b4-a56b-0843bb8b07ab.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\c3772e51-6a94-4a47-b369-60200ad428bf.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\c5985cc5-aa0a-41e8-8acb-8465a81b898d.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\c61fc6eb-4bb4-42b4-8e05-1959fe0024e9.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\c8ef854c-9541-4257-a74f-15ba4b7867cf.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\c9ec66a5-74a5-44c4-a995-8af2af0626cd.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\cb70a36c-53a7-48eb-a34f-eed3c082c158.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\cc50ac38-ed13-460f-8eea-5e995c132490.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\d1e0ec38-7140-4154-9674-024a8bad47c1.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\dbe689ad-2ece-40ee-837a-22e27daf77f6.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\dc5629fa-42fc-492c-98c7-1cf77801b11f.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\e233adbb-5ea6-4e00-bdad-11a429ea047a.pdf" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\e6a041e2-8251-4539-ad37-cc681dfc5873.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\f00ec9e1-a0ce-4b1b-a9f2-55a2130993d3.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\f06620ac-a62e-487f-a387-9042c373d7a8.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\f1cfa9b7-1e72-473d-9de0-ddbf1208a66a.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\f78e6973-a35a-4343-8b53-58923e67bf88.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\fb80a6bc-69dc-47bb-a8e7-646d9999ced5.docx" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\fbf83001-8b3f-4234-87fe-a46810a89c4d.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\ff1c845f-fc29-494b-8348-8c73c4161cf8.png" />
+    <Content Remove="wwwroot\Resources\MeetingFiles\ffa110fa-58be-4d87-b0c6-48451f86f262.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Shared\index.cshtml" />
+    <None Include="Views\Shared\index2.cshtml" />
+    <None Include="Views\Shared\index3.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.8.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Hangfire" Version="1.8.6" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.6" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.6" />
+    <PackageReference Include="HtmlSanitizer" Version="8.1.796-beta" />
+    <PackageReference Include="jQuery.Validation" Version="1.19.5" />
+    <PackageReference Include="Localization.AspNetCore.TagHelpers" Version="0.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="4.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+    <PackageReference Include="MimeMapping" Version="2.0.0" />
+    <PackageReference Include="Moment.js" Version="2.29.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.7" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.7" />
+    <PackageReference Include="NToastNotify" Version="8.0.0" />
+    <PackageReference Include="RestSharp" Version="110.2.1-alpha.0.16" />
+    <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MeetingScheduler.Business\MeetingScheduler.Infrastructure.csproj" />
+    <ProjectReference Include="..\MeetingScheduler.Identity\MeetingScheduler.Identity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Controllers\WebinarController.ar.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Controllers\WebinarController.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Controllers\SharedResource.ar.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Controllers\SharedResource.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.ar.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Webinar\Create.ar.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Webinar\Create.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Webinar\_detailsPartial.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Webinar\_indexPartial.ar.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Webinar\_indexPartial.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Business\Common\Services\" />
+    <Folder Include="Common\Services\" />
+    <Folder Include="wwwroot\Resources\MeetingFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Webinar\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <EmbeddedResourceUseDependentUponConvention>false</EmbeddedResourceUseDependentUponConvention>
+    <UserSecretsId>253c1ae2-a931-42b2-87f3-adf1babf8c2d</UserSecretsId>
+  </PropertyGroup>
+  
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
+</Project>

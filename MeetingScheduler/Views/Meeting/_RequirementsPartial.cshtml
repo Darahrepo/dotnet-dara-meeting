@@ -1,0 +1,29 @@
+﻿@model MeetingVm
+@using MeetingScheduler.Domain.Enums;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MeetingScheduler.UI.SharedResource> sharedLocalizer
+@{
+    Layout = "";
+    Random rnd = new Random();
+    var index = rnd.Next();
+}
+
+
+<div class="row" style="margin-top:3px;">
+    <input type="hidden" name="RequirementsList.Index" value='@index' />
+
+    <div class="col-8">
+        <input name="RequirementsList[@index]"  id="RequirementsList"  value=''  class="form-control" placeholder="@sharedLocalizer["RequiredItems_ph"]" />
+        <span class="text-danger" asp-validation-for="RequirementsList[@index]"></span>
+    </div>
+
+    <div class="col-4">
+        <a class="btn btn-default addRequirements"  data-controller="Meeting">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a class="btn btn-default removeRequirements">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+
+</div>
